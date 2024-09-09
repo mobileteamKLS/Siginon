@@ -326,12 +326,17 @@
                                         <!-- <font color="red">*</font> -->
                                     </div>
 
-                                    <div class="col-xs-6 NoPadding">
-                                        <select class="form-control" id="ddlULDNo"
-                                                onchange="GetAWBDetailsForULD($('#ddlULDNo').val())">
-                                            <option value="0">Select</option>
-                                        </select>
+                                    <div class="col-xs-2 NoPadding">
+                                        <input id="txtULDType" class="form-control" type="text" onkeyup="MovetoNext(this, 'txtULDNumber');" maxlength="3">
                                     </div>
+                                    <div class="col-xs-3 NoPadding">
+                                        <!--<input id="txtULDNumber" class="form-control" type="number" style="text-align:right;" onkeyup="NumberOnly(event); ChkMaxLength(this, '5'); MovetoNext(this, 'txtOwner');">-->
+                                        <input id="txtULDNumber" class="form-control" type="number" style="text-align:right;" maxlength="5" onkeyup="NumberOnly(event); MovetoNext(this, 'txtOwner');ChkMaxLength(this, '5');" pattern="/^-?\d+\.?\d*$/">
+                                    </div>
+                                    <div class="col-xs-1 NoPadding">
+                                        <input id="txtOwner" class="form-control" type="text" maxlength="3">
+                                    </div>
+                                    
                                 </div>
                                 <div class="form-group col-xs-12 col-sm-6 col-md-6 NoPadding">
                                     <div class="col-xs-6 col-form-label">
@@ -451,12 +456,38 @@
 
                                 <div class="form-group col-xs-12 col-sm-6 col-md-6 NoPadding" id="drDriverName">
                                     <div class="col-xs-6 col-form-label">
-                                        <label id="lblAgentName" for="txtAgentName">Agent Name</label>
+                                        <label id="lblAgentName" for="txtAgentName">Customer Name</label>
                                         <font color="red">*</font>
                                     </div>
                                     <div class="col-xs-6 NoPadding">
-                                        <input id="txtAgentName" class="form-control" type="text" autofocus autocomplete="off"
+                                        <input id="txtCustomerName" class="form-control" type="text" autofocus autocomplete="off"
                                                style="text-align:right;" onkeyup="ChkMaxLength(this, '20');">
+                                    </div>
+                                </div>
+                                <div class="form-group col-xs-12 col-sm-6 col-md-6 NoPadding">
+                                    <div class="col-xs-6 col-form-label">
+                                        <label id="lblShipmentNo" for="ddlOrigin"
+                                               class="control-label labelFont">Origin</label>
+                                               <font color="red">*</font>
+                                    </div>
+                                    <div class="col-xs-6 NoPadding">
+                                        <select class="form-control" id="ddlOrigin"
+                                                onchange="GetShipmentRelatedDetails($('#ddlShipmentNo').val())">
+                                            <!--<option value="0">Select</option>-->
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group col-xs-12 col-sm-6 col-md-6 NoPadding" id="ddlOffPoints">
+                                    <div class="col-xs-6 col-form-label">
+                                        <label id="lblDestination" for="ddlOffPoints">Off-Point</label>
+                                        <font color="red">*</font>
+                                    </div>
+                                    <div class="col-xs-6 NoPadding">
+                                        <select class="form-control" id="ddlOffPoints"
+                                                onchange="GetShipmentRelatedDetails($('#ddlShipmentNo').val())">
+                                            <!--<option value="0">Select</option>-->
+                                        </select>
                                     </div>
                                 </div>
 
@@ -466,13 +497,15 @@
                                         <font color="red">*</font>
                                     </div>
                                     <div class="col-xs-6 NoPadding">
-                                        <input id="txtDestination" class="form-control" type="text" autofocus autocomplete="off"
-                                               style="text-align:right;" onkeyup="ChkMaxLength(this, '20');">
+                                        <select class="form-control" id="ddlShipmentNo"
+                                                onchange="GetShipmentRelatedDetails($('#ddlShipmentNo').val())">
+                                            <!--<option value="0">Select</option>-->
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="form-group col-xs-12 col-sm-6 col-md-6 NoPadding" id="droffpoint">
                                     <div class="col-xs-6 col-form-label">
-                                        <label id="lbloffpoint" for="txtoffpoint">off Point</label>
+                                        <label id="lbloffpoint" for="txtoffpoint">Airline</label>
                                         <font color="red">*</font>
                                     </div>
                                     <div class="col-xs-6 NoPadding">
@@ -489,6 +522,30 @@
                                         <div class="col-xs-6 NoPadding">
                                             <input id="txtDescription" class="form-control" type="text" autofocus autocomplete="off"
                                                    style="text-align:right;" onkeyup="ChkMaxLength(this, '20');">
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-xs-12 col-sm-6 col-md-6 NoPadding" id="drDescription">
+                                        <div class="col-xs-6 col-form-label">
+                                            <label id="lbloffpoint" for="txtDescription">SHC</label>
+                                            <font color="red">*</font>
+                                        </div>
+    
+                                        <div class="col-xs-6 NoPadding">
+                                            <input id="txtDescription" class="form-control" type="text" autofocus autocomplete="off"
+                                                   style="text-align:right;" onkeyup="ChkMaxLength(this, '20');">
+                                        </div>
+                                    </div>
+                                  
+                                    <div class="form-group col-xs-12 col-sm-6 col-md-6 NoPadding" id="drDriverName">
+                                        <div class="form-group col-xs-12 col-sm-6 col-md-6 NoPadding" id="drDescription">
+                                            <div class="col-xs-6 col-form-label">
+                                                <label id="lbloffpoint" for="txtDescription">Remark</label>
+                                               
+                                            </div>
+                                            <div class="col-xs-6 NoPadding">
+                                                <input id="txtDescription" class="form-control" type="text" autofocus autocomplete="off"
+                                                       style="text-align:right;" onkeyup="ChkMaxLength(this, '20');">
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="form-group col-xs-12 col-sm-6 col-md-6 NoPadding">
