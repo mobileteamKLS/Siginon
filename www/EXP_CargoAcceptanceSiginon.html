@@ -239,7 +239,7 @@
                                         <!--<input id="txtVCTNo" class="form-control" type="number" autofocus style="text-align:right;" onkeyup="NumberOnly(event); ChkMaxLength(this, '12');" onblur="GetULDDetailsforVCT(); GetAWBDetailsforVCT();">-->
                                         <input disabled id="txtVCTNo" class="form-control" type="number" autofocus autocomplete="off"
                                                style="text-align:right;" onkeyup="ChkMaxLength(this, '12'); clearALLControlsonOnchangeVCT();"
-                                               onblur="GetAutoULDAWBDetails();">
+                                               >
                                     </div>
 
 
@@ -315,26 +315,33 @@
                                         </label>
                                     </div>-->
                                     <div class="col-xs-3 col-form-label">
-                                        <input type="radio" name="Loose" id="chkLoose" value="vct" />
+                                        <input type="radio" name="btn" id="chkLoose" onchange="radioButtonChange()" value="vct" checked/>
                                         <label id="lblLoose" for="chkLoose">Loose</label>
                                         <!-- <font color="red">*</font> -->
 
                                     </div>
                                     <div class="col-xs-3 col-form-label">
-                                        <input type="radio" name="ULD" id="chkULD" value="awb" />
-                                        <label id="lblULD" for="chkAwbNo">ULD</label>
+                                        <input type="radio" name="btn" id="chkULD" onchange="radioButtonChange()" value="awb" />
+                                        <label id="lblULD" for="chkULD">ULD</label>
                                         <!-- <font color="red">*</font> -->
                                     </div>
 
-                                    <div class="col-xs-2 NoPadding">
-                                        <input id="txtULDType" class="form-control" type="text" onkeyup="MovetoNext(this, 'txtULDNumber');" maxlength="3">
+                                    <div class="col-xs-2 NoPadding" id="divUldTyped" style="display: none;">
+                                        <input id="txtULDTyped" class="form-control" type="text" onkeyup="MovetoNext(this, 'txtULDNumber');" maxlength="3">
                                     </div>
-                                    <div class="col-xs-3 NoPadding">
+                                    <div class="col-xs-3 NoPadding" id="divUldNo" style="display: none;">
                                         <!--<input id="txtULDNumber" class="form-control" type="number" style="text-align:right;" onkeyup="NumberOnly(event); ChkMaxLength(this, '5'); MovetoNext(this, 'txtOwner');">-->
                                         <input id="txtULDNumber" class="form-control" type="number" style="text-align:right;" maxlength="5" onkeyup="NumberOnly(event); MovetoNext(this, 'txtOwner');ChkMaxLength(this, '5');" pattern="/^-?\d+\.?\d*$/">
                                     </div>
-                                    <div class="col-xs-1 NoPadding">
+                                    <div class="col-xs-1 NoPadding" id="divUldOwner" style="display: none;">
                                         <input id="txtOwner" class="form-control" type="text" maxlength="3">
+                                    </div>
+
+                                    <div class="col-xs-6 NoPadding"  id="divBulk">
+                                       
+                                        <input  id="txtBulk" class="form-control" type="text" autofocus autocomplete="off" value="BULK"
+                                               style="text-align:right;" onkeyup="ChkMaxLength(this, '12'); "
+                                              disabled>
                                     </div>
                                     
                                 </div>
@@ -351,9 +358,9 @@
                                                 onchange="GetShipmentDetails($('#ddlAWBNo').val())">
                                         </select>-->
 
-                                        <input  id="txtVCTNo" class="form-control" type="number" autofocus autocomplete="off"
-                                               style="text-align:right;" onkeyup="ChkMaxLength(this, '12'); clearALLControlsonOnchangeVCT();"
-                                               onblur="GetAutoULDAWBDetails();">
+                                        <input  id="txtAWBNo" class="form-control" type="number" autofocus autocomplete="off" maxlength="11"
+                                               style="text-align:right;" onkeyup="ChkMaxLength(this, '12'); getAirline();"
+                                               onblur="HHT_ExpGet_CargoAcceptance_AWBDetails();">
                                     </div>
                                 </div>
                             </div>
@@ -380,8 +387,8 @@
                                         <font color="red">*</font>
                                     </div>
                                     <div class="col-xs-6 NoPadding">
-                                        <input type="number" style="text-align:right;" id="txtPackages"
-                                               class="form-control" onkeyup="ChkMaxLength(this, '7');" disabled>
+                                        <input type="number" style="text-align:right;" id="txtAWBpkgs"
+                                               class="form-control" onkeyup="ChkMaxLength(this, '7');" >
                                     </div>
                                 </div>
                                 <div class="form-group col-xs-12 col-sm-6 col-md-6 NoPadding">
@@ -390,8 +397,8 @@
                                         <font color="red">*</font>
                                     </div>
                                     <div class="col-xs-4" style="padding-left:0px;padding-right:5px;">
-                                        <input id="txtGrossWt" class="form-control" type="number"
-                                               style="text-align:right;" onkeyup="ChkMaxLength(this, '9');" disabled>
+                                        <input id="txtAWBWt" class="form-control" type="number"
+                                               style="text-align:right;" onkeyup="ChkMaxLength(this, '9');" >
                                     </div>
                                     <div class="col-xs-2 NoPadding">
                                         <label class="form-control" id="ddlGrossWtUnit" disabled>KG</label>
@@ -400,30 +407,7 @@
                                 </div>
                             </div>
 
-                            <div class="row">
-                                <div class="form-group col-xs-12 col-sm-6 col-md-6 NoPadding">
-                                    <div class="col-xs-6 col-form-label">
-                                        <label id="lblPackages" for="shiptxtPackages"
-                                               class="control-label labelFont">Shipment NOP</label>
-                                    </div>
-                                    <div class="col-xs-6 NoPadding">
-                                        <input type="number" style="text-align:right;" id="shiptxtPackages"
-                                               class="form-control" onkeyup="ChkMaxLength(this, '7');" disabled>
-                                    </div>
-                                </div>
-                                <div class="form-group col-xs-12 col-sm-6 col-md-6 NoPadding">
-                                    <div class="col-xs-6 col-form-label">
-                                        <label id="lblGrWt" for="shiptxtGrossWt">Shipment Wt.</label>
-                                    </div>
-                                    <div class="col-xs-4" style="padding-left:0px;padding-right:5px;">
-                                        <input id="shiptxtGrossWt" class="form-control" type="number"
-                                               style="text-align:right;" onkeyup="ChkMaxLength(this, '9');" disabled>
-                                    </div>
-                                    <div class="col-xs-2 NoPadding">
-                                        <label class="form-control" id="ddlGrossWtUnit" disabled>KG</label>
-                                    </div>
-                                </div>
-                            </div>
+                         
                             <div class="row">
                                 <div class="form-group col-xs-12 col-sm-6 col-md-6 NoPadding">
                                     <div class="col-xs-6 col-form-label">
@@ -432,7 +416,7 @@
                                         <font color="red">*</font>
                                     </div>
                                     <div class="col-xs-6 NoPadding">
-                                        <input type="number" style="text-align:right;" id="txtReceivedPackages"
+                                        <input type="number" style="text-align:right;" id="txtReceivedPkgs"
                                                class="form-control" onkeyup="ChkMaxLength(this, '7');">
                                     </div>
                                 </div>
@@ -472,7 +456,7 @@
                                     </div>
                                     <div class="col-xs-6 NoPadding">
                                         <select class="form-control" id="ddlOrigin"
-                                                onchange="GetShipmentRelatedDetails($('#ddlShipmentNo').val())">
+                                                onchange="GetShipmentRelatedDetails($('#ddlOrigin').val())">
                                             <!--<option value="0">Select</option>-->
                                         </select>
                                     </div>
@@ -485,7 +469,7 @@
                                     </div>
                                     <div class="col-xs-6 NoPadding">
                                         <select class="form-control" id="ddlOffPoints"
-                                                onchange="GetShipmentRelatedDetails($('#ddlShipmentNo').val())">
+                                                onchange="GetShipmentRelatedDetails($('#ddlOffPoints').val())">
                                             <!--<option value="0">Select</option>-->
                                         </select>
                                     </div>
@@ -497,19 +481,19 @@
                                         <font color="red">*</font>
                                     </div>
                                     <div class="col-xs-6 NoPadding">
-                                        <select class="form-control" id="ddlShipmentNo"
-                                                onchange="GetShipmentRelatedDetails($('#ddlShipmentNo').val())">
+                                        <select class="form-control" id="ddlDestination"
+                                                onchange="GetShipmentRelatedDetails($('#ddlDestination').val())">
                                             <!--<option value="0">Select</option>-->
                                         </select>
                                     </div>
                                 </div>
                                 <div class="form-group col-xs-12 col-sm-6 col-md-6 NoPadding" id="droffpoint">
                                     <div class="col-xs-6 col-form-label">
-                                        <label id="lbloffpoint" for="txtoffpoint">Airline</label>
+                                        <label id="lbloffpoint" for="txtAirline">Airline</label>
                                         <font color="red">*</font>
                                     </div>
                                     <div class="col-xs-6 NoPadding">
-                                        <input id="txtoffpoint" class="form-control" type="text" autofocus autocomplete="off"
+                                        <input id="txtAirline" class="form-control" type="text" autofocus autocomplete="off"
                                                style="text-align:right;" onkeyup="ChkMaxLength(this, '20');">
                                     </div>
                                 </div>
@@ -526,24 +510,24 @@
                                     </div>
                                     <div class="form-group col-xs-12 col-sm-6 col-md-6 NoPadding" id="drDescription">
                                         <div class="col-xs-6 col-form-label">
-                                            <label id="lbloffpoint" for="txtDescription">SHC</label>
+                                            <label id="lbloffpoint" for="txtSHCCode">SHC Code</label>
                                             <font color="red">*</font>
                                         </div>
-    
                                         <div class="col-xs-6 NoPadding">
-                                            <input id="txtDescription" class="form-control" type="text" autofocus autocomplete="off"
+                                            <input id="txtSHCCode" class="form-control" type="text" autofocus autocomplete="off"
                                                    style="text-align:right;" onkeyup="ChkMaxLength(this, '20');">
                                         </div>
                                     </div>
+                                   
                                   
                                     <div class="form-group col-xs-12 col-sm-6 col-md-6 NoPadding" id="drDriverName">
                                         <div class="form-group col-xs-12 col-sm-6 col-md-6 NoPadding" id="drDescription">
                                             <div class="col-xs-6 col-form-label">
-                                                <label id="lbloffpoint" for="txtDescription">Remark</label>
+                                                <label id="lbloffpoint" for="txtRemark">Remark</label>
                                                
                                             </div>
                                             <div class="col-xs-6 NoPadding">
-                                                <input id="txtDescription" class="form-control" type="text" autofocus autocomplete="off"
+                                                <input id="txtRemark" class="form-control" type="text" autofocus autocomplete="off"
                                                        style="text-align:right;" onkeyup="ChkMaxLength(this, '20');">
                                             </div>
                                         </div>
@@ -553,16 +537,7 @@
                                         </table>
                                     </div>
 
-                                    <div class="form-group col-xs-12 col-sm-6 col-md-6 NoPadding" id="droffpoint">
-                                        <div class="col-xs-6 col-form-label">
-                                            <label id="lblAirline" for="txtAirline">Airline</label>
-                                            <font color="red">*</font>
-                                        </div>
-                                        <div class="col-xs-6 NoPadding">
-                                            <input id="txtAirline" class="form-control" type="text" autofocus autocomplete="off"
-                                                   style="text-align:right;" onkeyup="ChkMaxLength(this, '20');">
-                                        </div>
-                                    </div>
+                                   
 
                                
                                
@@ -696,7 +671,7 @@
                                 </div>
                                 <div class="form-group col-xs-4 col-sm-4 col-md-4">
                                     <input type="button" id="btnSave" class="form-control ButtonColor" value="Submit"
-                                           onclick="SaveDetails();">
+                                           onclick="HHT_ExpCargoAcceptance_SaveDetails();">
                                 </div>
 
                             </div>
