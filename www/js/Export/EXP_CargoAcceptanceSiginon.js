@@ -25,6 +25,14 @@ var DeviceMacAdd;
 var UMOUnit = 'CMT';
 var venderIDSelected;
 $(function () {
+
+    $('#ddlShipmentNo').on('change', function() {
+        var selectedValue = $(this).val();
+        HHT_ExpGet_CargoAcceptance_Ship_AWBDetails(selectedValue);
+        // You can perform other actions with the selected value here
+    });
+
+
     SetTodayDate();
     $('#VctNo input[type=radio]').change(function () {
         // alert($(this).val())
@@ -3058,7 +3066,209 @@ function VehicleNumberValidation() {
 
 }
 
+function HHT_ExpGet_CargoAcceptance_Ship_AWBDetails(shipNo) {
+    var MAWBNo = $('#txtAWBNo').val();
+    if (MAWBNo == '') {
+        return;
+    }
 
+    if (MAWBNo != '') {
+        if (MAWBNo.length != '11') {
+            if (MAWBNo.length != '13') {
+                errmsg = "Please enter valid AWB No.";
+                $.alert(errmsg);
+                $('#txtAWBNo').val('');
+                return;
+            }
+        }
+    }
+    var inputxml = "";
+    var connectionStatus = navigator.onLine ? 'online' : 'offline'
+    var errmsg = "";
+    var AWBNo = $('#txtAWBNo').val();
+    inputxml = '<Root><DockNo>' + AWBNo + '</DockNo><AirportCity>' + AirportCity + '</AirportCity><ShipNo>'+shipNo+'</ShipNo></Root>';
+
+
+    if (errmsg == "" && connectionStatus == "online") {
+        $.ajax({
+            type: "POST",
+            url: CargoWorksServiceURL + "HHT_ExpGet_CargoAcceptance_Ship_AWBDetails",
+            data: JSON.stringify({
+                'InputXML': inputxml,
+            }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (Result) {
+                Result = Result.d;
+                var xmlDoc = $.parseXML(Result);
+                console.log('VCT With AWB')
+
+               
+                $(xmlDoc).find('Table').each(function (index) {
+                   
+                    var vctno = $(this).find('VCTNO').text();
+                    var driverName = $(this).find('DRIVER_NAME').text();
+                    var driverId = $(this).find('DRIVER_ID').text();
+                    var vehicleNo = $(this).find('VEHICLE_NO').text();
+                   // var isComplete = $(this).find('ISCOMPLETE').text();
+                    var driverDob = $(this).find('Driver_DOB').text();
+
+                    
+                    $("#txtVCTNo").val(vctno);
+                    $("#txtDriverName").val(driverName);
+                    $("#txtDriverid").val(driverId);
+                    $("#txtVehicleNumber").val(vehicleNo);
+                    // $("#txtVCTNo").val(isComplete);
+                    var formattedDob = driverDob.split('T')[0];
+                    $("#txtDOB").val(formattedDob);
+                });
+
+            
+                $(xmlDoc).find('Table1').each(function (index) {
+                  
+                    var loose = $(this).find('Loose').text();
+
+                   
+                    console.log("Loose:", loose);
+                });
+
+                $(xmlDoc).find('Table2').each(function (index) {
+                    
+                    var awbNo = $(this).find('AWBNo').text();
+                    var awbNpx = $(this).find('AWB_NPX').text();
+                    var awbExpWt = $(this).find('AWB_ExpWt').text();
+                    var shipNpx = $(this).find('Ship_NPX').text();
+                    var shipExpWt = $(this).find('Ship_ExpWt').text();
+                    var destination = $(this).find('Destination').text();
+                    var agent = $(this).find('Agent').text();
+
+                   
+                    $("#txtAWBNo").val(awbNo);
+                    $("#txtAWBpkgs").val(awbNpx);
+                    $("#txtAWBWt").val(awbExpWt);
+                    // $("#txtShipNPX").val(shipNpx);
+                    // $("#txtShipExpWt").val(shipExpWt);
+                    $("#ddlDestination").val(destination);
+                    $("#txtCustomerName").val(agent);
+                });
+
+                $(xmlDoc).find('Table3').each(function (index) {
+                   
+                    var isDisableReceivedWt = $(this).find('IsDisableReceivedWt').text();
+                    console.log("Is Disable Received Weight:", isDisableReceivedWt);
+                });
+
+                $(xmlDoc).find('Table4').each(function (index) {
+                   
+                    var rowId = $(this).find('RowId').text();
+                    var awbPrefix = $(this).find('AWB_PREFIX').text();
+                    var awbNumber = $(this).find('AWB_NUMBER').text();
+                    var shipmentNumber = $(this).find('SHIPMENT_NUMBER').text();
+                    var receivedNop = $(this).find('Received_NOP').text();
+                    var receivedGrossWt = $(this).find('Received_Gross_Wt').text();
+                    var volume = $(this).find('VOLUME').text();
+                    var chargeableWeightKg = $(this).find('chargeable_wght_kg').text();
+                    var isActive = $(this).find('IsActive').text();
+                    var companyCode = $(this).find('CompanyCode').text();
+                    var airportCity = $(this).find('AirportCity').text();
+                    var createdBy = $(this).find('CreatedBy').text();
+                    var createdOn = $(this).find('CreatedOn').text();
+                    var tareWeight = $(this).find('Tare_Weight').text();
+                    var receivedNetWt = $(this).find('Received_Net_Wt').text();
+                    var equiType = $(this).find('Equi_Type').text();
+                    var equiSubType = $(this).find('Equi_SubType').text();
+                    var user = $(this).find('USER').text();
+                    var dateTime = $(this).find('DATETIME').text();
+
+                  
+                    $("#txtVehicleNumber").val(rowId);
+                    var newOption = $('<option></option>');
+                    newOption.val(shipmentNumber).text(shipmentNumber);
+                    newOption.appendTo('#ddlShipmentNo');
+                    $("#txtReceivedPkgs").val(receivedNop);
+                    $("#txtReceivedGrossWt").val(receivedGrossWt);
+                    $("#txtVolume").val(volume);
+                    $("#txtChargeableWeightKg").val(chargeableWeightKg);
+                    $("#chkIsActive").prop('checked', isActive == "True" ? true : false);
+                    // $("#ddlCompanyCode").val(companyCode);
+                    // $("#ddlAirportCity").val(airportCity);
+                    // $("#txtCreatedBy").val(createdBy);
+                    // $("#txtCreatedOn").val(createdOn);
+                    $("#txtTareWt").val(tareWeight);
+                    $("#txtReceivedNetWt").val(receivedNetWt);
+                    $("#ddlEquipmentType").val(equiType);
+                    $("#txtULDType").val(equiSubType);
+                    // $("#txtUser").val(user);
+                    // $("#txtDateTime").val(dateTime);
+                });
+
+                console.log(xmlDoc)
+                // $(xmlDoc).find('Table').each(function (index) {
+
+
+                //     Status = $(this).find('Status').text();
+                //     msg = $(this).find('Column1').text();
+
+
+                //     if (Status == 'E') {
+                //         errmsg = msg;
+                //         $('#ddlShipmentNo').empty();
+                //         var newOption = $('<option></option>');
+                //         newOption.val('1').text('1');
+                //         newOption.appendTo('#ddlShipmentNo');
+                //         $.alert(errmsg);
+                //         return;
+                //     }
+
+                //     ShpmentId = $(this).find('SHIPMENT_NUMBER').text();
+                //     ShpmentNo = $(this).find('SHIPMENT_NUMBER').text();
+                //     AWBNo = $(this).find('AWBNo').text();
+
+                //     if (index == 0) {
+                //         var newOption = $('<option></option>');
+                //         newOption.val('0').text('Select');
+                //         newOption.appendTo('#ddlShipmentNo');
+                //     }
+
+                //     var newOption = $('<option></option>');
+                //     newOption.val(ShpmentId).text(ShpmentNo);
+                //     newOption.appendTo('#ddlShipmentNo');
+
+                //     $('#ddlShipmentNo option').filter(function () {
+                //         return ($(this).val().trim() == "" && $(this).text().trim() == "");
+                //     }).remove();
+
+                //     var a = new Array();
+                //     $("#ddlShipmentNo").children("option").each(function (x) {
+                //         test = false;
+                //         b = a[x] = $(this).text();
+                //         for (i = 0; i < a.length - 1; i++) {
+                //             if (b == a[i]) test = true;
+                //         }
+                //         if (test) $(this).remove();
+                //     });
+                // });
+
+            },
+            error: function (msg) {
+                $("body").mLoading('hide');
+                $.alert('Data could not be loaded');
+            }
+        });
+        return false;
+    }
+    else if (connectionStatus == "offline") {
+        $("body").mLoading('hide');
+        $.alert('No Internet Connection!');
+    }
+    else if (errmsg != "") {
+        $("body").mLoading('hide');
+        $.alert(errmsg);
+    }
+    else {
+        $("body").mLoading('hide');
+    }
+}
 
 function HHT_ExpGet_CargoAcceptance_AWBDetails() {
     var MAWBNo = $('#txtAWBNo').val();
@@ -3097,109 +3307,103 @@ function HHT_ExpGet_CargoAcceptance_AWBDetails() {
                 var xmlDoc = $.parseXML(Result);
                 console.log('VCT With AWB')
 
-                // Iterate over each <Table> element
-                $xml.find('Table').each(function (index) {
-                    var $table = $(this);
-                    var vctno = $table.find('VCTNO').text();
-                    var driverName = $table.find('DRIVER_NAME').text();
-                    var driverId = $table.find('DRIVER_ID').text();
-                    var vehicleNo = $table.find('VEHICLE_NO').text();
-                    var isComplete = $table.find('ISCOMPLETE').text();
-                    var driverDob = $table.find('Driver_DOB').text();
+                $('#ddlShipmentNo').empty();
+                $(xmlDoc).find('Table').each(function (index) {
+                   
+                    var vctno = $(this).find('VCTNO').text();
+                    var driverName = $(this).find('DRIVER_NAME').text();
+                    var driverId = $(this).find('DRIVER_ID').text();
+                    var vehicleNo = $(this).find('VEHICLE_NO').text();
+                   // var isComplete = $(this).find('ISCOMPLETE').text();
+                    var driverDob = $(this).find('Driver_DOB').text();
 
-                    // Log or process the data
-                    console.log("Table " + index + ":");
-                    console.log("VCTNO:", vctno);
-                    console.log("Driver Name:", driverName);
-                    console.log("Driver ID:", driverId);
-                    console.log("Vehicle No:", vehicleNo);
-                    console.log("Is Complete:", isComplete);
-                    console.log("Driver DOB:", driverDob);
+                    
+                    $("#txtVCTNo").val(vctno);
+                    $("#txtDriverName").val(driverName);
+                    $("#txtDriverid").val(driverId);
+                    $("#txtVehicleNumber").val(vehicleNo);
+                    // $("#txtVCTNo").val(isComplete);
+                    var formattedDob = driverDob.split('T')[0];
+                    $("#txtDOB").val(formattedDob);
                 });
 
-                // Process other specific tables
-                $xml.find('Table1').each(function (index) {
-                    var $table1 = $(this);
-                    var loose = $table1.find('Loose').text();
+            
+                $(xmlDoc).find('Table1').each(function (index) {
+                  
+                    var loose = $(this).find('Loose').text();
 
-                    // Log or process the data
-                    console.log("Table1 " + index + ":");
+                   
                     console.log("Loose:", loose);
                 });
 
-                $xml.find('Table2').each(function (index) {
-                    var $table2 = $(this);
-                    var awbNo = $table2.find('AWBNo').text();
-                    var awbNpx = $table2.find('AWB_NPX').text();
-                    var awbExpWt = $table2.find('AWB_ExpWt').text();
-                    var shipNpx = $table2.find('Ship_NPX').text();
-                    var shipExpWt = $table2.find('Ship_ExpWt').text();
-                    var destination = $table2.find('Destination').text();
-                    var agent = $table2.find('Agent').text();
+                $(xmlDoc).find('Table2').each(function (index) {
+                    
+                    var awbNo = $(this).find('AWBNo').text();
+                    var awbNpx = $(this).find('AWB_NPX').text();
+                    var awbExpWt = $(this).find('AWB_ExpWt').text();
+                    var shipNpx = $(this).find('Ship_NPX').text();
+                    var shipExpWt = $(this).find('Ship_ExpWt').text();
+                    var destination = $(this).find('Destination').text();
+                    var agent = $(this).find('Agent').text();
 
-                    // Log or process the data
-                    console.log("Table2 " + index + ":");
-                    console.log("AWB No:", awbNo);
-                    console.log("AWB NPX:", awbNpx);
-                    console.log("AWB Exp Weight:", awbExpWt);
-                    console.log("Ship NPX:", shipNpx);
-                    console.log("Ship Exp Weight:", shipExpWt);
-                    console.log("Destination:", destination);
-                    console.log("Agent:", agent);
+                   
+                    $("#txtAWBNo").val(awbNo);
+                    $("#txtAWBpkgs").val(awbNpx);
+                    $("#txtAWBWt").val(awbExpWt);
+                    // $("#txtShipNPX").val(shipNpx);
+                    // $("#txtShipExpWt").val(shipExpWt);
+                    $("#ddlDestination").val(destination);
+                    $("#txtCustomerName").val(agent);
                 });
 
-                $xml.find('Table3').each(function (index) {
-                    var $table3 = $(this);
-                    var isDisableReceivedWt = $table3.find('IsDisableReceivedWt').text();
-
-                    // Log or process the data
-                    console.log("Table3 " + index + ":");
+                $(xmlDoc).find('Table3').each(function (index) {
+                   
+                    var isDisableReceivedWt = $(this).find('IsDisableReceivedWt').text();
                     console.log("Is Disable Received Weight:", isDisableReceivedWt);
                 });
 
-                $xml.find('Table4').each(function (index) {
-                    var $table4 = $(this);
-                    var rowId = $table4.find('RowId').text();
-                    var awbPrefix = $table4.find('AWB_PREFIX').text();
-                    var awbNumber = $table4.find('AWB_NUMBER').text();
-                    var shipmentNumber = $table4.find('SHIPMENT_NUMBER').text();
-                    var receivedNop = $table4.find('Received_NOP').text();
-                    var receivedGrossWt = $table4.find('Received_Gross_Wt').text();
-                    var volume = $table4.find('VOLUME').text();
-                    var chargeableWeightKg = $table4.find('chargeable_wght_kg').text();
-                    var isActive = $table4.find('IsActive').text();
-                    var companyCode = $table4.find('CompanyCode').text();
-                    var airportCity = $table4.find('AirportCity').text();
-                    var createdBy = $table4.find('CreatedBy').text();
-                    var createdOn = $table4.find('CreatedOn').text();
-                    var tareWeight = $table4.find('Tare_Weight').text();
-                    var receivedNetWt = $table4.find('Received_Net_Wt').text();
-                    var equiType = $table4.find('Equi_Type').text();
-                    var equiSubType = $table4.find('Equi_SubType').text();
-                    var user = $table4.find('USER').text();
-                    var dateTime = $table4.find('DATETIME').text();
+                $(xmlDoc).find('Table4').each(function (index) {
+                   
+                    var rowId = $(this).find('RowId').text();
+                    var awbPrefix = $(this).find('AWB_PREFIX').text();
+                    var awbNumber = $(this).find('AWB_NUMBER').text();
+                    var shipmentNumber = $(this).find('SHIPMENT_NUMBER').text();
+                    var receivedNop = $(this).find('Received_NOP').text();
+                    var receivedGrossWt = $(this).find('Received_Gross_Wt').text();
+                    var volume = $(this).find('VOLUME').text();
+                    var chargeableWeightKg = $(this).find('chargeable_wght_kg').text();
+                    var isActive = $(this).find('IsActive').text();
+                    var companyCode = $(this).find('CompanyCode').text();
+                    var airportCity = $(this).find('AirportCity').text();
+                    var createdBy = $(this).find('CreatedBy').text();
+                    var createdOn = $(this).find('CreatedOn').text();
+                    var tareWeight = $(this).find('Tare_Weight').text();
+                    var receivedNetWt = $(this).find('Received_Net_Wt').text();
+                    var equiType = $(this).find('Equi_Type').text();
+                    var equiSubType = $(this).find('Equi_SubType').text();
+                    var user = $(this).find('USER').text();
+                    var dateTime = $(this).find('DATETIME').text();
 
-                    // Log or process the data
-                    console.log("Table4 " + index + ":");
-                    console.log("Row Id:", rowId);
-                    console.log("AWB Prefix:", awbPrefix);
-                    console.log("AWB Number:", awbNumber);
-                    console.log("Shipment Number:", shipmentNumber);
-                    console.log("Received NOP:", receivedNop);
-                    console.log("Received Gross Weight:", receivedGrossWt);
-                    console.log("Volume:", volume);
-                    console.log("Chargeable Weight (Kg):", chargeableWeightKg);
-                    console.log("Is Active:", isActive);
-                    console.log("Company Code:", companyCode);
-                    console.log("Airport City:", airportCity);
-                    console.log("Created By:", createdBy);
-                    console.log("Created On:", createdOn);
-                    console.log("Tare Weight:", tareWeight);
-                    console.log("Received Net Weight:", receivedNetWt);
-                    console.log("Equipment Type:", equiType);
-                    console.log("Equipment Sub-Type:", equiSubType);
-                    console.log("User:", user);
-                    console.log("Date Time:", dateTime);
+                  
+                    $("#txtVehicleNumber").val(rowId);
+                    var newOption = $('<option></option>');
+                    newOption.val(shipmentNumber).text(shipmentNumber);
+                    newOption.appendTo('#ddlShipmentNo');
+                    $("#txtReceivedPkgs").val(receivedNop);
+                    $("#txtReceivedGrossWt").val(receivedGrossWt);
+                    $("#txtVolume").val(volume);
+                    $("#txtChargeableWeightKg").val(chargeableWeightKg);
+                    $("#chkIsActive").prop('checked', isActive == "True" ? true : false);
+                    // $("#ddlCompanyCode").val(companyCode);
+                    // $("#ddlAirportCity").val(airportCity);
+                    // $("#txtCreatedBy").val(createdBy);
+                    // $("#txtCreatedOn").val(createdOn);
+                    $("#txtTareWt").val(tareWeight);
+                    $("#txtReceivedNetWt").val(receivedNetWt);
+                    $("#ddlEquipmentType").val(equiType);
+                    $("#txtULDType").val(equiSubType);
+                    // $("#txtUser").val(user);
+                    // $("#txtDateTime").val(dateTime);
                 });
 
                 console.log(xmlDoc)

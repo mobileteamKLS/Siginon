@@ -373,7 +373,7 @@
                                     </div>
                                     <div class="col-xs-6 NoPadding">
                                         <select class="form-control" id="ddlShipmentNo"
-                                                onchange="GetShipmentRelatedDetails($('#ddlShipmentNo').val())">
+                                              >
                                             <!--<option value="0">Select</option>-->
                                         </select>
                                     </div>
@@ -481,10 +481,12 @@
                                         <font color="red">*</font>
                                     </div>
                                     <div class="col-xs-6 NoPadding">
-                                        <select class="form-control" id="ddlDestination"
+                                        <!-- <select class="form-control" id="ddlDestination"
                                                 onchange="GetShipmentRelatedDetails($('#ddlDestination').val())">
-                                            <!--<option value="0">Select</option>-->
-                                        </select>
+                                          
+                                        </select> -->
+                                        <input id="ddlDestination" class="form-control" type="text" autofocus autocomplete="off"
+                                               style="text-align:right;" onkeyup="ChkMaxLength(this, '20');">
                                     </div>
                                 </div>
                                 <div class="form-group col-xs-12 col-sm-6 col-md-6 NoPadding" id="droffpoint">
