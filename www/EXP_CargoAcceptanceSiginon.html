@@ -202,6 +202,41 @@
         .table > tbody > tr > td, .table > tbody > tr > th, .table > tfoot > tr > td, .table > tfoot > tr > th, .table > thead > tr > td, .table > thead > tr > th {
             vertical-align: inherit;
         }
+
+        #accepted-list {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+  border: 1px solid #ccc;
+}
+
+#accepted-list th, #accepted-list td {
+  padding: 2px;
+  border: 1px solid #ddd;
+  text-align: center;
+}
+
+#accepted-list th {
+  background-color: #f2f2f2;
+  font-weight: bold;
+}
+
+#accepted-list td button {
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+}
+
+#accepted-list td button.delete {
+  color: red;
+  font-size: 18px;
+}
+
+#accepted-list td button.print {
+  color: green;
+  font-size: 18px;
+}
+
     </style>
 </head>
 
@@ -238,7 +273,7 @@
                                     <div class="col-xs-6 NoPadding">
                                         <!--<input id="txtVCTNo" class="form-control" type="number" autofocus style="text-align:right;" onkeyup="NumberOnly(event); ChkMaxLength(this, '12');" onblur="GetULDDetailsforVCT(); GetAWBDetailsforVCT();">-->
                                         <input disabled id="txtVCTNo" class="form-control" type="number" autofocus autocomplete="off"
-                                               style="text-align:right;" onkeyup="ChkMaxLength(this, '12'); clearALLControlsonOnchangeVCT();"
+                                               style="text-align:right;" onkeyup="ChkMaxLength(this, '12');"
                                                >
                                     </div>
 
@@ -534,10 +569,10 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="form-group col-xs-12 col-sm-6 col-md-6 NoPadding">
+                                    <!-- <div class="form-group col-xs-12 col-sm-6 col-md-6 NoPadding">
                                         <table class="table" id="SHCCodeGrid">
                                         </table>
-                                    </div>
+                                    </div> -->
 
                                    
 
@@ -665,7 +700,7 @@
                             <div class="row form-group" style="margin-top:10px;">
                                 <div class="form-group col-xs-4 col-sm-4 col-md-4">
                                     <input type="button" id="btnClear" class="form-control ButtonColor" value="Clear"
-                                           onclick="clearALLControlsonButton();">
+                                           onclick="clearAll();">
                                 </div>
                                 <div class="form-group col-xs-4 col-sm-4 col-md-4">
                                     <input type="button" id="btnExcLanded" class="form-control ButtonColor" value="Exit"
@@ -677,6 +712,30 @@
                                 </div>
 
                             </div>
+                            <div class="row form-group" style="margin-top:10px;">
+                                <div class="col-xs-12 col-sm-12 col-md-12 NoPadding" >
+                                    <div class="table-responsive">
+                                        <table id="accepted-list"  border='1'  class="table-responsive" style="width:100%; height:50px; font-size:9pt;border-color: white;margin-top: 2%;">
+                                            <thead >
+                                              <tr>
+                                                <th>NOP</th>
+                                                <th>Gr Wt.</th>
+                                                <th>Tare Wt.</th>
+                                                <th>Net Wt.</th>
+                                                <th>User</th>
+                                                <th>Date & Time</th>
+                                                <th>Delete</th>
+                                                <th>Print</th>
+                                              </tr>
+                                            </thead>
+                                            <tbody>
+                                              <!-- Rows will be dynamically added here -->
+                                            </tbody>
+                                          </table>
+                                    </div>
+                                </div>
+                            </div>
+                            
                         </form>
                     </div>
                 </div>

@@ -26,7 +26,7 @@ var UMOUnit = 'CMT';
 var venderIDSelected;
 $(function () {
 
-    $('#ddlShipmentNo').on('change', function() {
+    $('#ddlShipmentNo').on('change', function () {
         var selectedValue = $(this).val();
         HHT_ExpGet_CargoAcceptance_Ship_AWBDetails(selectedValue);
         // You can perform other actions with the selected value here
@@ -3066,6 +3066,76 @@ function VehicleNumberValidation() {
 
 }
 
+// ////////////////////////////////////////////////
+
+function clearAll() {
+    $('#txtVCTNo').val('');
+    $('#txtDriverName').val('');
+    $('#txtDriverid').val('');
+    $('#txtVehicleNumber').val('');
+    $("#chkLoose").prop("checked", true);
+    $('#txtULDTyped').val('');
+    $('#txtULDNumber').val('');
+    $('#txtOwner').val('');
+    $('#txtAWBNo').val('');
+    $('#txtAWBpkgs').val('');
+    $('#txtAWBWt').val('');
+    $('#txtReceivedPkgs').val('');
+    $('#txtReceivedGrossWt').val('');
+    $('#txtCustomerName').val('');
+    $('#ddlDestination').val('');
+    $('#txtAirline').val('');
+    $('#txtDescription').val('');
+    $('#txtSHCCode').val('');
+    $('#txtRemark').val('');
+    removeRow();
+    $('#DN_TOTAL_NPR').text('');
+    $('#DN_TOT_WGHT_REC_KG').text('');
+    $('#CHARGEABLE_WEIGHT').text('');
+    $('#SHIP_REVD_NPR').text('');
+    $('#SHIP_REVD_WGHT').text('')
+
+    $('#divShowGrid').html('');
+
+    $('#ddlULDNo').empty();
+    var newOption = $('<option></option>');
+    newOption.val('').text('Select');
+    newOption.appendTo('#ddlULDNo');
+
+    $('#ddlAWBNo').empty();
+    var newOption = $('<option></option>');
+    newOption.val('').text('Select');
+    newOption.appendTo('#ddlAWBNo');
+
+    $('#ddlShipmentNo').empty();
+    var newOption = $('<option></option>');
+    newOption.val('').text('Select');
+    newOption.appendTo('#ddlShipmentNo');
+
+    $('#Pieces1').val('').css("background-color", "white");
+    $('#ddlUOM1').val('CMT');
+    $('#Length1').val('').css("background-color", "white");
+    $('#Width1').val('').css("background-color", "white");
+    $('#Volume1').val('').css("background-color", "white");
+    $('#Height1').val('').css("background-color", "white");
+
+
+    $('#txtChargeableWt').val('');
+    $('#ddlULDSK1').empty();
+    var newOption = $('<option></option>');
+    newOption.val('').text('Select');
+    newOption.appendTo('#ddlULDSK1');
+
+    $('#txtTareWt').val('');
+    $('#txtULDType').val('');
+    $('#txtReceivedNetWt').val('');
+
+    $('#spanDiv').hide();
+    $('#tableShowwithDta').hide();
+
+}
+
+
 function HHT_ExpGet_CargoAcceptance_Ship_AWBDetails(shipNo) {
     var MAWBNo = $('#txtAWBNo').val();
     if (MAWBNo == '') {
@@ -3086,7 +3156,7 @@ function HHT_ExpGet_CargoAcceptance_Ship_AWBDetails(shipNo) {
     var connectionStatus = navigator.onLine ? 'online' : 'offline'
     var errmsg = "";
     var AWBNo = $('#txtAWBNo').val();
-    inputxml = '<Root><DockNo>' + AWBNo + '</DockNo><AirportCity>' + AirportCity + '</AirportCity><ShipNo>'+shipNo+'</ShipNo></Root>';
+    inputxml = '<Root><DockNo>' + AWBNo + '</DockNo><AirportCity>' + AirportCity + '</AirportCity><ShipNo>' + shipNo + '</ShipNo></Root>';
 
 
     if (errmsg == "" && connectionStatus == "online") {
@@ -3103,17 +3173,17 @@ function HHT_ExpGet_CargoAcceptance_Ship_AWBDetails(shipNo) {
                 var xmlDoc = $.parseXML(Result);
                 console.log('VCT With AWB')
 
-               
+
                 $(xmlDoc).find('Table').each(function (index) {
-                   
+
                     var vctno = $(this).find('VCTNO').text();
                     var driverName = $(this).find('DRIVER_NAME').text();
                     var driverId = $(this).find('DRIVER_ID').text();
                     var vehicleNo = $(this).find('VEHICLE_NO').text();
-                   // var isComplete = $(this).find('ISCOMPLETE').text();
+                    // var isComplete = $(this).find('ISCOMPLETE').text();
                     var driverDob = $(this).find('Driver_DOB').text();
 
-                    
+
                     $("#txtVCTNo").val(vctno);
                     $("#txtDriverName").val(driverName);
                     $("#txtDriverid").val(driverId);
@@ -3123,17 +3193,17 @@ function HHT_ExpGet_CargoAcceptance_Ship_AWBDetails(shipNo) {
                     $("#txtDOB").val(formattedDob);
                 });
 
-            
+
                 $(xmlDoc).find('Table1').each(function (index) {
-                  
+
                     var loose = $(this).find('Loose').text();
 
-                   
+
                     console.log("Loose:", loose);
                 });
 
                 $(xmlDoc).find('Table2').each(function (index) {
-                    
+
                     var awbNo = $(this).find('AWBNo').text();
                     var awbNpx = $(this).find('AWB_NPX').text();
                     var awbExpWt = $(this).find('AWB_ExpWt').text();
@@ -3142,7 +3212,7 @@ function HHT_ExpGet_CargoAcceptance_Ship_AWBDetails(shipNo) {
                     var destination = $(this).find('Destination').text();
                     var agent = $(this).find('Agent').text();
 
-                   
+
                     $("#txtAWBNo").val(awbNo);
                     $("#txtAWBpkgs").val(awbNpx);
                     $("#txtAWBWt").val(awbExpWt);
@@ -3153,13 +3223,13 @@ function HHT_ExpGet_CargoAcceptance_Ship_AWBDetails(shipNo) {
                 });
 
                 $(xmlDoc).find('Table3').each(function (index) {
-                   
+
                     var isDisableReceivedWt = $(this).find('IsDisableReceivedWt').text();
                     console.log("Is Disable Received Weight:", isDisableReceivedWt);
                 });
 
                 $(xmlDoc).find('Table4').each(function (index) {
-                   
+
                     var rowId = $(this).find('RowId').text();
                     var awbPrefix = $(this).find('AWB_PREFIX').text();
                     var awbNumber = $(this).find('AWB_NUMBER').text();
@@ -3180,7 +3250,7 @@ function HHT_ExpGet_CargoAcceptance_Ship_AWBDetails(shipNo) {
                     var user = $(this).find('USER').text();
                     var dateTime = $(this).find('DATETIME').text();
 
-                  
+
                     $("#txtVehicleNumber").val(rowId);
                     var newOption = $('<option></option>');
                     newOption.val(shipmentNumber).text(shipmentNumber);
@@ -3202,7 +3272,8 @@ function HHT_ExpGet_CargoAcceptance_Ship_AWBDetails(shipNo) {
                     // $("#txtDateTime").val(dateTime);
                 });
 
-                console.log(xmlDoc)
+                EXP_CargoAcceptance_GetAcceptedList(shipNo);
+
                 // $(xmlDoc).find('Table').each(function (index) {
 
 
@@ -3309,15 +3380,15 @@ function HHT_ExpGet_CargoAcceptance_AWBDetails() {
 
                 $('#ddlShipmentNo').empty();
                 $(xmlDoc).find('Table').each(function (index) {
-                   
+
                     var vctno = $(this).find('VCTNO').text();
                     var driverName = $(this).find('DRIVER_NAME').text();
                     var driverId = $(this).find('DRIVER_ID').text();
                     var vehicleNo = $(this).find('VEHICLE_NO').text();
-                   // var isComplete = $(this).find('ISCOMPLETE').text();
+                    // var isComplete = $(this).find('ISCOMPLETE').text();
                     var driverDob = $(this).find('Driver_DOB').text();
 
-                    
+
                     $("#txtVCTNo").val(vctno);
                     $("#txtDriverName").val(driverName);
                     $("#txtDriverid").val(driverId);
@@ -3327,17 +3398,17 @@ function HHT_ExpGet_CargoAcceptance_AWBDetails() {
                     $("#txtDOB").val(formattedDob);
                 });
 
-            
+
                 $(xmlDoc).find('Table1').each(function (index) {
-                  
+
                     var loose = $(this).find('Loose').text();
 
-                   
+
                     console.log("Loose:", loose);
                 });
 
                 $(xmlDoc).find('Table2').each(function (index) {
-                    
+
                     var awbNo = $(this).find('AWBNo').text();
                     var awbNpx = $(this).find('AWB_NPX').text();
                     var awbExpWt = $(this).find('AWB_ExpWt').text();
@@ -3346,7 +3417,7 @@ function HHT_ExpGet_CargoAcceptance_AWBDetails() {
                     var destination = $(this).find('Destination').text();
                     var agent = $(this).find('Agent').text();
 
-                   
+
                     $("#txtAWBNo").val(awbNo);
                     $("#txtAWBpkgs").val(awbNpx);
                     $("#txtAWBWt").val(awbExpWt);
@@ -3357,13 +3428,13 @@ function HHT_ExpGet_CargoAcceptance_AWBDetails() {
                 });
 
                 $(xmlDoc).find('Table3').each(function (index) {
-                   
+
                     var isDisableReceivedWt = $(this).find('IsDisableReceivedWt').text();
                     console.log("Is Disable Received Weight:", isDisableReceivedWt);
                 });
 
                 $(xmlDoc).find('Table4').each(function (index) {
-                   
+
                     var rowId = $(this).find('RowId').text();
                     var awbPrefix = $(this).find('AWB_PREFIX').text();
                     var awbNumber = $(this).find('AWB_NUMBER').text();
@@ -3384,7 +3455,7 @@ function HHT_ExpGet_CargoAcceptance_AWBDetails() {
                     var user = $(this).find('USER').text();
                     var dateTime = $(this).find('DATETIME').text();
 
-                  
+
                     $("#txtVehicleNumber").val(rowId);
                     var newOption = $('<option></option>');
                     newOption.val(shipmentNumber).text(shipmentNumber);
@@ -3406,7 +3477,22 @@ function HHT_ExpGet_CargoAcceptance_AWBDetails() {
                     // $("#txtDateTime").val(dateTime);
                 });
 
-                console.log(xmlDoc)
+                $(xmlDoc).find('Table5').each(function (index) {
+                    var pieces = $(this).find('NUMBER_OF_PIECES').text();
+                    var length = $(this).find('LENGTH').text();
+                    var width = $(this).find('WIDTH').text();
+                    var height = $(this).find('HEIGHT').text();
+                    var volume = $(this).find('AWB_NUMBER').text();
+                    console.log("@@@@@@@" + index);
+                    var idNo = parseInt(index) + 1;
+                    $("#Pieces" + idNo).val(pieces);
+                    $("#Length" + idNo).val(length);
+                    $("#Width" + idNo).val(width);
+                    $("#Height" + idNo).val(height);
+                    $("#Volume" + idNo).val();
+
+                });
+                EXP_CargoAcceptance_GetAcceptedList( $('#ddlShipmentNo').val());
                 // $(xmlDoc).find('Table').each(function (index) {
 
 
@@ -3452,6 +3538,91 @@ function HHT_ExpGet_CargoAcceptance_AWBDetails() {
                 //         if (test) $(this).remove();
                 //     });
                 // });
+
+            },
+            error: function (msg) {
+                $("body").mLoading('hide');
+                $.alert('Data could not be loaded');
+            }
+        });
+        return false;
+    }
+    else if (connectionStatus == "offline") {
+        $("body").mLoading('hide');
+        $.alert('No Internet Connection!');
+    }
+    else if (errmsg != "") {
+        $("body").mLoading('hide');
+        $.alert(errmsg);
+    }
+    else {
+        $("body").mLoading('hide');
+    }
+}
+
+function EXP_CargoAcceptance_GetAcceptedList(shipNo) {
+    var MAWBNo = $('#txtAWBNo').val();
+    if (MAWBNo == '') {
+        return;
+    }
+
+    if (MAWBNo != '') {
+        if (MAWBNo.length != '11') {
+            if (MAWBNo.length != '13') {
+                errmsg = "Please enter valid AWB No.";
+                $.alert(errmsg);
+                $('#txtAWBNo').val('');
+                return;
+            }
+        }
+    }
+    var inputxml = "";
+    var connectionStatus = navigator.onLine ? 'online' : 'offline'
+    var errmsg = "";
+    var AWBNo = $('#txtAWBNo').val();
+    inputxml = '<Root><AWBNo>' + AWBNo + '</AWBNo><AirportCity>' + AirportCity + '</AirportCity><ShipmentNo>' + shipNo + '</ShipmentNo></Root>';
+
+
+    if (errmsg == "" && connectionStatus == "online") {
+        $.ajax({
+            type: "POST",
+            url: CargoWorksServiceURL + "EXP_CargoAcceptance_GetAcceptedList",
+            data: JSON.stringify({
+                'InputXML': inputxml,
+            }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (Result) {
+                Result = Result.d;
+                var xmlDoc = $.parseXML(Result);
+                $("#acceptedListTable").show();
+                var tableBody = $('#accepted-list tbody');
+                tableBody.empty();
+
+                $(xmlDoc).find('Table').each(function (index) {
+                    var NOP = $(this).find('NOP').text();
+                    var WEIGHT = $(this).find('WEIGHT').text();
+                    var Tare_Wt = $(this).find('Tare_x0020_Wt').text();
+                    var Net_Wt = $(this).find('Net_x0020_Wt').text();
+                    var USER = $(this).find('USER').text();
+                    var DATETIME = $(this).find('DATETIME').text();
+
+                    var tableRow = `
+                  <tr>
+                <td>${NOP}</td>
+          <td>${WEIGHT}</td>
+          <td>${Tare_Wt}</td>
+          <td>${Net_Wt}</td>
+          <td>${USER}</td>
+          <td>${DATETIME}</td>
+          <td><button class="delete" onclick="deleteRow()">🗑️</button></td>
+          <td><button class="print" onclick="printRow()">🖨️</button></td>
+        </tr>
+      `;
+                    tableBody.append(tableRow);
+
+                });
+
 
             },
             error: function (msg) {
